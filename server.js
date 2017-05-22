@@ -1,10 +1,29 @@
 const http = require('http');
 
+function getIpAddress(req) {
+    return req.headers['x-forwarded-for'] || 
+        req.connection.remoteAddress || 
+	req.socket.remoteAddress ||
+	req.connection.socket.remoteAddress;
+}
+
+function getLanguage(req) {
+    const acceptLanguage = req.headers['accept-language'];
+    
+    return acceptLanguage ? acceptLanguage.match(/[a-zA-Z-]/)[0] : null;
+}
+
+function getSoftware(req) {
+    const userAgent = req.headers['user-agent'];
+
+    return userAgent ? userAgent.match(/\([^\)]*\)/)[0] : null;
+}
+
 const server = http.createServer(function (req, res) {
     const output = JSON.stringify({
-	ipaddress: req.headers.host,
-	language:  req.headers['accept-language'],
-	software:  req.headers['user-agent']
+	ipaddress: getIpAddress(req),
+	language:  getLanguage(req),
+	software:  getSoftware(req)
     });
 
     res.writeHead(200, {

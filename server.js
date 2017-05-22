@@ -10,13 +10,14 @@ function getIpAddress(req) {
 function getLanguage(req) {
     const acceptLanguage = req.headers['accept-language'];
     
-    return acceptLanguage ? acceptLanguage.match(/[a-zA-Z-]/)[0] : null;
+    return acceptLanguage ? acceptLanguage.match(/[a-zA-Z-]*/)[0] : null;
 }
 
 function getSoftware(req) {
     const userAgent = req.headers['user-agent'];
-
-    return userAgent ? userAgent.match(/\([^\)]*\)/)[0] : null;
+    const software  = userAgent.match(/\([^\)]*\)/)[0];
+    
+    return software ? software.slice(1, software.length - 1) : null;
 }
 
 const server = http.createServer(function (req, res) {
